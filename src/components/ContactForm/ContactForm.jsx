@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Label, Input, Button} from './ContactForm.styled';
+import { Label, Input, Button } from './ContactForm.styled';
 
 class ContactForm extends Component {
   state = {
@@ -18,8 +18,18 @@ class ContactForm extends Component {
     e.preventDefault();
 
     const { name, number } = this.state;
+    const { contacts, createContact } = this.props;
 
-    this.props.createContact({
+    if (contacts.find(contact => contact.name === name)) {
+      alert(`${name} is already in contacts.`);
+
+      this.setState({
+        name: '',
+      });
+
+      return;
+    }
+    createContact({
       name,
       number,
     });
@@ -70,6 +80,13 @@ class ContactForm extends Component {
 }
 
 ContactForm.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   createContact: PropTypes.func.isRequired,
 };
 

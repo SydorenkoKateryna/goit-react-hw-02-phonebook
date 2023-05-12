@@ -18,13 +18,6 @@ class App extends Component {
   createContact = data => {
     const newContact = { id: nanoid(), ...data };
 
-    const { contacts } = this.state;
-
-    if (contacts.find(contact => contact.name === newContact.name)) {
-      alert(`${newContact.name} is already in contacts.`);
-      return;
-    }
-
     this.setState(prevState => {
       return { contacts: [...prevState.contacts, newContact] };
     });
@@ -44,7 +37,7 @@ class App extends Component {
 
   getVisibleContacts = () => {
     const { contacts, filter } = this.state;
-    const normalizedFilter = filter.toLocaleLowerCase();
+    const normalizedFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
@@ -52,8 +45,8 @@ class App extends Component {
   };
 
   render() {
-    const filterValue = this.state.filter;
     const visibleContacts = this.getVisibleContacts();
+    const { contacts, filter } = this.state;
 
     return (
       <div
@@ -70,14 +63,15 @@ class App extends Component {
           fontSize: '16px',
           color: '#010101',
           backgroundColor: '#ffffff',
-          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.2)',
+          boxShadow:
+            '0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.2)',
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm createContact={this.createContact} />
+        <ContactForm createContact={this.createContact} contacts={contacts} />
 
         <h2>Contacts</h2>
-        <Filter setFilter={this.setFilter} filterValue={filterValue} />
+        <Filter setFilter={this.setFilter} filterValue={filter} />
         <ContactList
           contacts={visibleContacts}
           deleteContact={this.deleteContact}
